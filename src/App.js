@@ -4,20 +4,31 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-import { NavLink } from "./components/NavLink";
+//@ts-ignore
+import { NavLink } from './components/NavLink';
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Main from "./pages/Main";
 
+import {
+  apiKey,
+  authDomain,
+  storageBucket,
+  messagingSenderId,
+  appId,
+  measurementId,
+  projectId,
+} from "../src/firebaseconfig.js"
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCiKo-se_sSwCaD6NGf_tTnYf4t_oKIHLE",
-  authDomain: "ticketcaptain-1c760.firebaseapp.com",
-  projectId: "ticketcaptain-1c760",
-  storageBucket: "ticketcaptain-1c760.appspot.com",
-  messagingSenderId: "232530109892",
-  appId: "1:232530109892:web:9aef8fb492fab97d137091",
-  measurementId: "G-JE9GJ3302Y",
+  apiKey: apiKey,
+  authDomain: authDomain,
+  projectId: projectId,
+  storageBucket: storageBucket,
+  messagingSenderId: messagingSenderId,
+  appId: appId,
+  measurementId: measurementId,
 };
 
 const app = initializeApp(firebaseConfig);
