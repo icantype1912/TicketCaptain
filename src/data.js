@@ -14,12 +14,12 @@ export const initialData= {
         },
         'column-2':{
             id : 'column-2',
-            title : 'Doing',
+            title : 'In progress',
             taskIds : ['task-3']
         },
         'column-3':{
             id : 'column-3',
-            title : 'Done',
+            title : 'Completed',
             taskIds : ['task-1','task-2']
         }
     },
