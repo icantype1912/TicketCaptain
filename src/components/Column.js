@@ -2,33 +2,41 @@ import React, { useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import TextField from "@mui/material/TextField";
-import DoneIcon from '@mui/icons-material/Done';
-import CloseIcon from '@mui/icons-material/Close';
+import DoneIcon from "@mui/icons-material/Done";
+import CloseIcon from "@mui/icons-material/Close";
+
+import { RowList } from "./RowList";
 
 export const Column = (props) => {
-  const { column, tasks, index } = props;
-  const [title, setTitle] = useState(column.title);
-  const [changing,setChanging] = useState(column.title)
+  const { column, tasks, index, setData, data } = props;
+  const [titleChange, setTitleChange] = useState(column.title);
   const [isEditing, setIsEditing] = useState(false);
-  
 
   const handleEdit = () => {
     setIsEditing(true);
   };
-  const onEditConfirm = ()=>{
-    setTitle(changing)
-    setIsEditing(false)
-  }
-  const onEditCancel = ()=>{
-    setChanging(title)
-    setIsEditing(false)
-  }
-  const handleSubmit = (e)=>{
-    e.preventDefault()
-    onEditConfirm()
-  }
+  const onEditConfirm = () => {
+    setData((prev) => ({
+      ...prev,
+      columns: {
+        ...prev.columns,
+        [column.id]: {
+          ...prev.columns[column.id],
+          title: titleChange,
+        },
+      },
+    }));
+    setIsEditing(false);
+  };
+  const onEditCancel = () => {
+    setIsEditing(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onEditConfirm();
+  };
   return (
     <Draggable draggableId={column.id} index={index}>
       {(provided) => (
@@ -38,10 +46,16 @@ export const Column = (props) => {
           ref={provided.innerRef}
         >
           {isEditing ? (
-            <form {...provided.dragHandleProps} className="flex items-end" onSubmit={handleSubmit}>
+            <form
+              {...provided.dragHandleProps}
+              className="flex items-end"
+              onSubmit={handleSubmit}
+            >
               <TextField
-                defaultValue={title}
-                onChange={(e)=>{setChanging(e.target.value)}}
+                defaultValue={column.title}
+                onChange={(e) => {
+                  setTitleChange(e.target.value);
+                }}
                 size="small"
                 variant="standard"
                 sx={{ marginBottom: 1, marginTop: 1, marginLeft: 1 }}
@@ -80,7 +94,7 @@ export const Column = (props) => {
               className="ml-4 text-xl text-blue-900 mb-4"
               {...provided.dragHandleProps}
             >
-              {title}
+              {column.title}
 
               <Button
                 sx={{
@@ -100,59 +114,13 @@ export const Column = (props) => {
           )}
           <Droppable droppableId={column.id} type="tasks">
             {(provided) => (
-              <div
-                className="row-list"
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-              >
-                {tasks.map((task, index) => {
-                  return (
-                    <Draggable
-                      key={task.id}
-                      draggableId={task.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          className="row"
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
-                        >
-                          <h1 className="text-blue-100 flex justify-between items-center">
-                            {task.content}
-                            <Button
-                              sx={{
-                                color: "#CAF0F8",
-                                width: 20,
-                                height: 20,
-                                borderRadius: "50%",
-                                minWidth: 0,
-                                padding: 0,
-                                marginLeft: 1,
-                              }}
-                            >
-                              <MoreHorizIcon sx={{ fontSize: 20 }} />
-                            </Button>
-                          </h1>
-                        </div>
-                      )}
-                    </Draggable>
-                  );
-                })}
-                {provided.placeholder}
-                <Button
-                  sx={{
-                    color: "#023d8a",
-                    textTransform: "none",
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                  }}
-                >
-                  + Add a task
-                </Button>
-              </div>
+              <RowList
+                provided={provided}
+                tasks={tasks}
+                column={column}
+                data={data}
+                setData={setData}
+              />
             )}
           </Droppable>
         </div>

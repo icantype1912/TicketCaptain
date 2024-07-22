@@ -7,7 +7,6 @@ const Main = () => {
   const [data, setData] = useState(initialData);
   const dragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
-
     if (type === "column") {
       const newColumnOrder = Array.from(data.columnOrder);
       newColumnOrder.splice(source.index, 1);
@@ -92,10 +91,12 @@ const Main = () => {
                 );
                 return (
                   <Column
-                    key={column.id}
+                    key = {column.id}
                     column={column}
                     tasks={tasks}
                     index={index}
+                    setData={setData}
+                    data = {data}
                   />
                 );
               })}

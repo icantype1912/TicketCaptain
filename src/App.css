@@ -102,6 +102,7 @@
 
 .column {
   height: auto;
+  max-height:50ch;
   margin: 2ch;
   width: 50ch;
   padding: 1ch;
@@ -111,13 +112,20 @@
   border-radius: 1ch;
   box-shadow: 0px 3px 3px 3px rgb(0 0 0 / 15%);
   background-color: #caf0f86a;
+  overflow: auto;
 }
+.column::-webkit-scrollbar {
+  display: none;
+}
+
 .row-list{
   display: flex;
   flex-direction: column;
   min-height: 5ch;
   height: auto;
 }
+
+
 
 .add{
   border-style: solid;
@@ -131,10 +139,15 @@
 .row{
   border-style: solid;
   border-width: 1px;
-  padding: 0.5rem;
-  background-color: #023d8aa1;  
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: #0076b6bd;  
   border-radius: 1ch;
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+
 
