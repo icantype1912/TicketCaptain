@@ -1,12 +1,18 @@
-import React, { useState } from "react";
-import { initialData } from "../data";
+import React, { useEffect, useState, useCallback } from "react";
 import { Column } from "../components/Column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import CircularProgress from "@mui/material/CircularProgress";
 
-const Main = () => {
-  const [data, setData] = useState(initialData);
+const Main = (props) => {
+  const { db } = props;
+  const [data, setData] = useState(null);
+
   const dragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
+    if (!destination) {
+      return;
+    }
     if (type === "column") {
       const newColumnOrder = Array.from(data.columnOrder);
       newColumnOrder.splice(source.index, 1);
@@ -15,9 +21,6 @@ const Main = () => {
         ...prev,
         columnOrder: newColumnOrder,
       }));
-      return
-    }
-    if (!destination) {
       return;
     }
     if (
@@ -70,41 +73,85 @@ const Main = () => {
     }));
     return;
   };
+
+  const retrieveData = useCallback(async () => {
+    try {
+      const docRef = doc(db, "ticketData", "main");
+      const docSnap = await getDoc(docRef);
+      setData(docSnap.data());
+    } catch (error) {
+      console.error("Error retrieving document: ", error);
+    }
+  }, [db]);
+
+  const storeData = useCallback(
+    async (data) => {
+      try {
+        await setDoc(doc(db, "ticketData", "main"), data);
+        console.log("Data stored successfully!");
+      } catch (error) {
+        console.error("Error storing data: ", error);
+      }
+    },
+    [db]
+  );
+
+  useEffect(() => {
+    retrieveData();
+  }, [retrieveData]);
+
+  useEffect(() => {
+    if (data) {
+      storeData(data);
+    }
+  }, [data, storeData]);
+
   return (
     <div className="main-page">
-      <DragDropContext onDragEnd={dragEnd}>
-        <Droppable
-          droppableId="allColumns"
-          direction="horizontal"
-          type="column"
-        >
-          {(provided) => (
-            <div
-              className="column-parent"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {data.columnOrder.map((columnId, index) => {
-                const column = data.columns[columnId];
-                const tasks = column.taskIds.map(
-                  (taskId) => data.tasks[taskId]
-                );
-                return (
-                  <Column
-                    key = {column.id}
-                    column={column}
-                    tasks={tasks}
-                    index={index}
-                    setData={setData}
-                    data = {data}
-                  />
-                );
-              })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      {data ? (
+        <DragDropContext onDragEnd={dragEnd}>
+          <Droppable
+            droppableId="allColumns"
+            direction="horizontal"
+            type="column"
+          >
+            {(provided) => (
+              <div
+                className="column-parent"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {data.columnOrder.map((columnId, index) => {
+                  const column = data.columns[columnId];
+                  const tasks = column.taskIds.map(
+                    (taskId) => data.tasks[taskId]
+                  );
+                  return (
+                    <Column
+                      key={column.id}
+                      column={column}
+                      tasks={tasks}
+                      index={index}
+                      setData={setData}
+                      data={data}
+                    />
+                  );
+                })}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      ) : (
+        <CircularProgress
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "48%",
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      )}
     </div>
   );
 };
