@@ -119,7 +119,7 @@ const SignUp = (props) => {
       addUser();
       navigate("/main");
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error.code) {
         switch (error.code) {
           case "auth/email-already-in-use":

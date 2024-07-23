@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Column } from "../components/Column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { doc, setDoc, getDoc } from "firebase/firestore";
@@ -74,7 +74,7 @@ const Main = (props) => {
     return;
   };
 
-  const retrieveData = useCallback(async () => {
+  const retrieveData = async () => {
     try {
       const docRef = doc(db, "ticketData", "main");
       const docSnap = await getDoc(docRef);
@@ -82,29 +82,28 @@ const Main = (props) => {
     } catch (error) {
       console.error("Error retrieving document: ", error);
     }
-  }, [db]);
+  };
 
-  const storeData = useCallback(
-    async (data) => {
-      try {
-        await setDoc(doc(db, "ticketData", "main"), data);
-        console.log("Data stored successfully!");
-      } catch (error) {
-        console.error("Error storing data: ", error);
-      }
-    },
-    [db]
-  );
+  const storeData = async (data) => {
+    try {
+      await setDoc(doc(db, "ticketData", "main"), data);
+      console.log("Data stored successfully!");
+    } catch (error) {
+      console.error("Error storing data: ", error);
+    }
+  };
 
   useEffect(() => {
     retrieveData();
-  }, [retrieveData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (data) {
       storeData(data);
     }
-  }, [data, storeData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   return (
     <div className="main-page">

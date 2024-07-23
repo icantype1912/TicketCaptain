@@ -55,6 +55,9 @@ const Login = (props) => {
             setFirebaseError(error.code);
         }
       }
+      else{
+        console.error(error)
+      }
     } finally {
       setLoading(false);
     }
