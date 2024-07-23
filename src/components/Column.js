@@ -90,12 +90,13 @@ export const Column = (props) => {
               </Button>
             </form>
           ) : (
-            <h1
-              className="ml-4 text-xl text-blue-900 mb-4"
-              {...provided.dragHandleProps}
-            >
-              {column.title}
-
+            <div className="flex items-center" 
+            {...provided.dragHandleProps}>
+              <h1
+                className="ml-4 text-xl text-blue-900"
+              >
+                {column.title}
+              </h1>
               <Button
                 sx={{
                   color: "#023E8A",
@@ -110,7 +111,7 @@ export const Column = (props) => {
               >
                 <EditIcon sx={{ fontSize: 15 }} />{" "}
               </Button>
-            </h1>
+            </div>
           )}
           <Droppable droppableId={column.id} type="tasks">
             {(provided) => (

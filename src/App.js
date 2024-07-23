@@ -4,7 +4,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-//@ts-ignore
 import { NavLink } from './components/NavLink';
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -74,7 +73,7 @@ const App = () => {
           </Routes>
         ) : (
           <Routes>
-            <Route path="/" element={<Main />}></Route>
+            <Route path="/" element={<Main db= {db}/>}></Route>
             <Route path="*" element={<Navigate to="/" />}></Route>
           </Routes>
         )}
