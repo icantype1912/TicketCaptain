@@ -1,17 +1,30 @@
 import React, { useState } from "react";
-import { Modal, Box, TextField, InputLabel, Button } from "@mui/material";
+import {
+  Modal,
+  Box,
+  TextField,
+  InputLabel,
+  Button,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { MuiChipsInput } from "mui-chips-input";
 import { nanoid } from "nanoid";
 
 export const CreateIssue = (props) => {
-  const { data, column, setData,isAdding,setIsAdding } = props;
+  const { data, column, setData, isAdding, setIsAdding } = props;
   const [err, setErr] = useState("");
   const [newTask, setNewTask] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [chips, setChips] = React.useState([]);
+  const [newIssueColumn, setNewIssueColumn] = useState(column.id);
 
   const handleChange = (newChips) => {
     setChips(newChips);
+  };
+
+  const handleColumnChange = (e) => {
+    setNewIssueColumn(e.target.value);
   };
 
   const handleTaskSubmit = (e) => {
@@ -25,6 +38,7 @@ export const CreateIssue = (props) => {
     setIsAdding(false);
     setChips([]);
     setErr("");
+    setNewIssueColumn(column.id);
   };
 
   const onAddConfirm = () => {
@@ -39,7 +53,7 @@ export const CreateIssue = (props) => {
       description: newDescription,
       tags: chips,
     };
-    const newTaskArr = [...data.columns[column.id].taskIds, newTaskId];
+    const newTaskArr = [...data.columns[newIssueColumn].taskIds, newTaskId];
     setData((prev) => ({
       ...prev,
       tasks: {
@@ -48,8 +62,8 @@ export const CreateIssue = (props) => {
       },
       columns: {
         ...prev.columns,
-        [column.id]: {
-          ...prev.columns[column.id],
+        [newIssueColumn]: {
+          ...prev.columns[newIssueColumn],
           taskIds: newTaskArr,
         },
       },
@@ -59,6 +73,7 @@ export const CreateIssue = (props) => {
     setChips([]);
     setIsAdding(false);
     setErr("");
+    setNewIssueColumn(column.id);
   };
   return (
     <Modal
@@ -102,6 +117,22 @@ export const CreateIssue = (props) => {
             value={newDescription}
             onChange={(e) => setNewDescription(e.target.value)}
           />
+          <div className="flex flex-col">
+            <InputLabel>Column</InputLabel>
+            <Select
+              size="small"
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={newIssueColumn}
+              onChange={handleColumnChange}
+            >
+              {data.columnOrder.map((columnId) => (
+                <MenuItem key={columnId} value={columnId}>
+                  {data.columns[columnId].title}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
           <div className="flex flex-col gap-1">
             <InputLabel>Tags</InputLabel>
             <MuiChipsInput value={chips} onChange={handleChange} />

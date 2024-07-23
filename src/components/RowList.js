@@ -32,22 +32,20 @@ export const RowList = (props) => {
         );
       })}
       {provided.placeholder}
-      <div>
-        <Button
-          onClick={handleAdd}
-          sx={{
-            color: "#023d8a",
-            textTransform: "none",
-            display: "flex",
-            justifyContent: "flex-start",
-            "&:hover": {
-              backgroundColor: "rgba(0, 181, 284,0.2)",
-            },
-          }}
-        >
-          + Create issue
-        </Button>
-      </div>
+      <Button
+        onClick={handleAdd}
+        sx={{
+          color: "#023d8a",
+          textTransform: "none",
+          display: "flex",
+          justifyContent: "flex-start",
+          "&:hover": {
+            backgroundColor: "rgba(0, 181, 284,0.2)",
+          },
+        }}
+      >
+        + Create issue
+      </Button>
       <CreateIssue
         data={data}
         column={column}

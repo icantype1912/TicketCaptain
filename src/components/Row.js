@@ -166,6 +166,8 @@ export const Row = (props) => {
         isEditing={isEditing}
         setIsEditing={setIsEditing}
         setData={setData}
+        data = {data}
+        column = {column}
       />
     </div>
   );
