@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
-  Modal,
-  Box,
-  TextField,
   Chip,
   Paper,
   Menu,
@@ -14,63 +11,18 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  InputLabel
 } from "@mui/material";
-import { MuiChipsInput } from "mui-chips-input";
+
+import { EditIssue } from "./EditIssue";
 
 export const Row = (props) => {
   const { provided, task, setData, data, column } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [err, setErr] = useState("");
-  const [newTask, setNewTask] = useState(task.content);
-  const [newDescription, setNewDescription] = useState(task.description);
-  const [chips, setChips] = React.useState(task.tags);
-
-
-  const handleChange = (newChips) => {
-    setChips(newChips);
-  };
 
   const handleEdit = () => {
     setIsEditing(true);
-  };
-
-  const onEditCancel = () => {
-    setNewTask(task.content);
-    setNewDescription(task.description);
-    setIsEditing(false);
-    setChips(task.tags);
-    setErr("");
-  };
-
-  const handleTaskSubmit = (e) => {
-    e.preventDefault();
-    onEditConfirm();
-  };
-
-  const onEditConfirm = () => {
-    if (newTask.length < 1) {
-      setErr("*Required");
-      return;
-    }
-    setData((prev) => ({
-      ...prev,
-      tasks: {
-        ...prev.tasks,
-        [task.id]:{
-          ...prev.tasks[task.id],
-          content:newTask,
-          description:newDescription,
-          tags:chips
-        }
-
-      },
-    }));
-    setIsEditing(false);
-    setErr("");
-    handleClose()
   };
 
   const open = Boolean(anchorEl);
@@ -93,17 +45,17 @@ export const Row = (props) => {
     });
     const { [task.id]: removedTask, ...newTasks } = data.tasks;
 
-    setData((prev)=>({
+    setData((prev) => ({
       ...prev,
-      tasks:newTasks,
-      columns:{
+      tasks: newTasks,
+      columns: {
         ...prev.columns,
-        [column.id]:{
+        [column.id]: {
           ...prev.columns[column.id],
-          taskIds : newTaskIDs
-        }
-      }
-    }))
+          taskIds: newTaskIDs,
+        },
+      },
+    }));
   };
   return (
     <div
@@ -124,11 +76,11 @@ export const Row = (props) => {
             height: 25,
             borderRadius: "50%",
             minWidth: 0,
-            padding: 0,
+            padding: 1,
             marginLeft: 1,
           }}
         >
-          <MoreHorizIcon sx={{ fontSize: 25 }} />
+          <MoreHorizIcon sx={{ fontSize: 22 }} />
         </Button>
       </h1>
       <div className="m-2 text-sm">
@@ -162,6 +114,7 @@ export const Row = (props) => {
         })}
       </Paper>
       <Menu
+        disableAutoFocusItem
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
@@ -201,78 +154,19 @@ export const Row = (props) => {
             sx={{
               textTransform: "none",
             }}
-            autoFocus
             onClick={deleteIssue}
           >
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-      <Modal
-        open={isEditing}
-        onClose={onEditCancel}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 500,
-            bgcolor: "#CAF0F8",
-            border: "1px solid #000",
-            borderRadius: 2,
-            boxShadow: 24,
-            p: 3,
-          }}
-        >
-          <form className="flex flex-col gap-4 " onSubmit={handleTaskSubmit}>
-            <h1 className="text-blue-800 text-xl">Edit Issue</h1>
-            <TextField
-              label="Title"
-              size="small"
-              helperText={err}
-              error={err}
-              value={newTask}
-              onChange={(e) => {
-                setNewTask(e.target.value);
-              }}
-            />
-            <TextField
-              label="Description"
-              size="small"
-              multiline
-              rows={4}
-              value={newDescription}
-              onChange={(e) => setNewDescription(e.target.value)}
-            />
-            <div className="flex flex-col gap-1">
-              <InputLabel>Tags</InputLabel>
-              <MuiChipsInput value={chips} onChange={handleChange} />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button
-                sx={{ color: "#001865", textTransform: "none" }}
-                onClick={onEditCancel}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "#00077B6",
-                }}
-                autoFocus
-                onClick={onEditConfirm}
-              >
-                Confirm
-              </Button>
-            </div>
-          </form>
-        </Box>
-      </Modal>
+      <EditIssue
+        task={task}
+        handleClose={handleClose}
+        isEditing={isEditing}
+        setIsEditing={setIsEditing}
+        setData={setData}
+      />
     </div>
   );
 };

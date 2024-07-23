@@ -52,6 +52,7 @@ export const Column = (props) => {
               onSubmit={handleSubmit}
             >
               <TextField
+                autoFocus
                 defaultValue={column.title}
                 onChange={(e) => {
                   setTitleChange(e.target.value);
@@ -90,10 +91,10 @@ export const Column = (props) => {
               </Button>
             </form>
           ) : (
-            <div className="flex items-center" 
+            <div className="flex items-center ml-4 gap-1 mb-1" 
             {...provided.dragHandleProps}>
               <h1
-                className="ml-4 text-xl text-blue-900"
+                className="text-xl text-blue-900"
               >
                 {column.title}
               </h1>
@@ -105,7 +106,6 @@ export const Column = (props) => {
                   borderRadius: "50%",
                   minWidth: 0,
                   padding: 0,
-                  marginLeft: 1,
                 }}
                 onClick={handleEdit}
               >
