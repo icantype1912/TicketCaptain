@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Box, TextField, InputLabel, Button,Select,MenuItem } from "@mui/material";
 import { MuiChipsInput } from "mui-chips-input";
 
-export const EditIssue = (props) => {
+export const EditModal = (props) => {
   const { task,handleClose,isEditing,setIsEditing,setData,data,column } = props;
 
   const [err, setErr] = useState("");

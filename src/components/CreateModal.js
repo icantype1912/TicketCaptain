@@ -11,7 +11,7 @@ import {
 import { MuiChipsInput } from "mui-chips-input";
 import { nanoid } from "nanoid";
 
-export const CreateIssue = (props) => {
+export const CreateModal = (props) => {
   const { data, column, setData, isAdding, setIsAdding } = props;
   const [err, setErr] = useState("");
   const [newTask, setNewTask] = useState("");

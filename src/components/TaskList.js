@@ -2,7 +2,7 @@ import { Draggable } from "react-beautiful-dnd";
 import { Button } from "@mui/material";
 import { Task } from "./Task";
 import { useState } from "react";
-import { CreateIssue } from "./CreateIssue";
+import { CreateModal } from "./CreateModal";
 
 export const TaskList = (props) => {
   const { provided, tasks, column, setData, data } = props;
@@ -46,7 +46,7 @@ export const TaskList = (props) => {
       >
         + Create issue
       </Button>
-      <CreateIssue
+      <CreateModal
         data={data}
         column={column}
         setData={setData}

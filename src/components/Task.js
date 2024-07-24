@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import { EditIssue } from "./EditIssue";
+import { EditModal } from "./EditModal";
 
 export const Task = (props) => {
   const { provided, task, setData, data, column } = props;
@@ -160,7 +160,7 @@ export const Task = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <EditIssue
+      <EditModal
         task={task}
         handleClose={handleClose}
         isEditing={isEditing}
