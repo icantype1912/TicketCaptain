@@ -138,7 +138,7 @@ export const EditModal = (props) => {
           </div>
           <div className="flex flex-col gap-1">
             <InputLabel>Tags</InputLabel>
-            <MuiChipsInput value={chips} onChange={handleChange} />
+            <MuiChipsInput value={chips} onChange={handleChange} size="small" />
           </div>
           <div className="flex justify-end gap-2">
             <Button

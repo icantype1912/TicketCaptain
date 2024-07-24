@@ -85,9 +85,8 @@
 
 .main-page {
   margin: auto;
-  margin-top: 2ch;
   background-color: #caf0f8;
-  height: 82vh;
+  height: 80vh;
   width: 97vw;
   border-radius: 1ch;
   box-shadow: 0px 10px 15px 10px rgb(0 0 0 / 25%);
@@ -102,7 +101,7 @@
 
 .column {
   height: auto;
-  max-height:50ch;
+  max-height:48ch;
   margin: 2ch;
   width: 50ch;
   padding: 1ch;

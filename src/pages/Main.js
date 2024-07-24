@@ -1,17 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { Column } from "../components/Column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { doc, setDoc, getDoc,where,query,collection,updateDoc,getDocs } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  where,
+  query,
+  collection,
+  updateDoc,
+  getDocs,
+} from "firebase/firestore";
 import CircularProgress from "@mui/material/CircularProgress";
 import { nanoid } from "nanoid";
 import { initialData } from "../utilities/tutorial";
+import { Column } from "../components/Column";
+import { ColabModal } from "../components/ColabModal";
 
 const Main = (props) => {
   const { db, user } = props;
+  const [openColab, setOpenColab] = useState(false);
   const [data, setData] = useState(null);
   const [boardId, setBoardId] = useState(null);
-  const [boardExists,setBoardExists] = useState(true)
+  const [boardExists, setBoardExists] = useState(true);
 
+  const handleOpenColab = () => {
+    setOpenColab(true);
+  };
+
+  
   const dragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
     if (!destination) {
@@ -88,9 +104,8 @@ const Main = (props) => {
         } else {
           setData(initialData);
         }
-      }
-      else{
-        setData(initialData)
+      } else {
+        setData(initialData);
       }
     } catch (error) {
       console.error("Error retrieving document: ", error);
@@ -106,24 +121,27 @@ const Main = (props) => {
     }
   };
 
-  const getBoardId = async() => {
+  const getBoardId = async () => {
     try {
-      const q = query(collection(db, "users"), where("email", "==", user.email));
+      const q = query(
+        collection(db, "users"),
+        where("email", "==", user.email)
+      );
       const querySnapshot = await getDocs(q);
-  
+
       if (!querySnapshot.empty) {
         const docSnapshot = querySnapshot.docs[0];
         const docData = docSnapshot.data();
-  
+
         if (docData.boardId) {
           setBoardId(docData.boardId);
           setBoardExists(true);
         } else {
           const newBoardId = nanoid();
-  
+
           const userDocRef = doc(db, "users", docSnapshot.id);
           await updateDoc(userDocRef, { boardId: newBoardId });
-  
+
           setBoardId(newBoardId);
         }
       } else {
@@ -134,10 +152,10 @@ const Main = (props) => {
     }
   };
 
-  useEffect(()=>{
-    getBoardId()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+  useEffect(() => {
+    getBoardId();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     retrieveData();
@@ -152,52 +170,71 @@ const Main = (props) => {
   }, [data]);
 
   return (
-    <div className="main-page">
-      {data ? (
-        <DragDropContext onDragEnd={dragEnd}>
-          <Droppable
-            droppableId="allColumns"
-            direction="horizontal"
-            type="column"
-          >
-            {(provided) => (
-              <div
-                className="column-parent"
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-              >
-                {data.columnOrder.map((columnId, index) => {
-                  const column = data.columns[columnId];
-                  const tasks = column.taskIds.map(
-                    (taskId) => data.tasks[taskId]
-                  );
-                  return (
-                    <Column
-                      key={column.id}
-                      column={column}
-                      tasks={tasks}
-                      index={index}
-                      setData={setData}
-                      data={data}
-                    />
-                  );
-                })}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-      ) : (
-        <CircularProgress
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "48%",
-            transform: "translate(-50%, -50%)",
-          }}
-        />
-      )}
-    </div>
+    <>
+      <div className="h-10 flex justify-between ml-7 mr-7 items-center">
+        <h1
+          className="text-blue-900 hover:text-blue-800 hover:cursor-pointer"
+          onClick={handleOpenColab}
+        >
+          Collaborate +
+        </h1>
+        <div className="flex gap-5">
+          <h1 className="text-blue-900 hover:text-blue-800 hover:cursor-pointer">
+            My Board
+          </h1>
+          <h1 className="text-blue-900 hover:text-blue-800 hover:cursor-pointer">
+            Shared Boards
+          </h1>
+        </div>
+      </div>
+      <ColabModal openColab = {openColab} setOpenColab = {setOpenColab}/>
+      <div className="main-page">
+        {data ? (
+          <DragDropContext onDragEnd={dragEnd}>
+            <Droppable
+              droppableId="allColumns"
+              direction="horizontal"
+              type="column"
+            >
+              {(provided) => (
+                <div
+                  className="column-parent"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {data.columnOrder.map((columnId, index) => {
+                    const column = data.columns[columnId];
+                    const tasks = column.taskIds.map(
+                      (taskId) => data.tasks[taskId]
+                    );
+                    return (
+                      <Column
+                        key={column.id}
+                        column={column}
+                        tasks={tasks}
+                        index={index}
+                        setData={setData}
+                        data={data}
+                      />
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        ) : (
+          <CircularProgress
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "48%",
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        )}
+      </div>
+    </>
   );
 };
 
