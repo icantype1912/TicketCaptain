@@ -20,6 +20,12 @@ export const initialData = {
         description: "Click on the (+ Add issue) button below to create a new task",
         tags: ["Tutorial"],
       },
+      "task-4": {
+        id: "task-4",
+        content: "Welcome to TicketCaptain",
+        description: "Read the sample board to get a better understanding of our service",
+        tags: ["Tutorial"],
+      },
     },
     columns: {
       "column-1": {

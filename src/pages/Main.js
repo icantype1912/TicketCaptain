@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Column } from "../components/Column";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc,where,query,collection,updateDoc,getDocs } from "firebase/firestore";
 import CircularProgress from "@mui/material/CircularProgress";
+import { nanoid } from "nanoid";
+import { initialData } from "../utilities/tutorial";
 
 const Main = (props) => {
-  const { db } = props;
+  const { db, user } = props;
   const [data, setData] = useState(null);
+  const [boardId, setBoardId] = useState(null);
+  const [boardExists,setBoardExists] = useState(true)
 
   const dragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
@@ -76,9 +80,18 @@ const Main = (props) => {
 
   const retrieveData = async () => {
     try {
-      const docRef = doc(db, "ticketData", "main");
-      const docSnap = await getDoc(docRef);
-      setData(docSnap.data());
+      if (boardExists) {
+        const docRef = doc(db, "ticketData", boardId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setData(docSnap.data());
+        } else {
+          setData(initialData);
+        }
+      }
+      else{
+        setData(initialData)
+      }
     } catch (error) {
       console.error("Error retrieving document: ", error);
     }
@@ -86,17 +99,50 @@ const Main = (props) => {
 
   const storeData = async (data) => {
     try {
-      await setDoc(doc(db, "ticketData", "main"), data);
+      await setDoc(doc(db, "ticketData", boardId), data);
       console.log("Data stored successfully!");
     } catch (error) {
       console.error("Error storing data: ", error);
     }
   };
 
+  const getBoardId = async() => {
+    try {
+      const q = query(collection(db, "users"), where("email", "==", user.email));
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        const docSnapshot = querySnapshot.docs[0];
+        const docData = docSnapshot.data();
+  
+        if (docData.boardId) {
+          setBoardId(docData.boardId);
+          setBoardExists(true);
+        } else {
+          const newBoardId = nanoid();
+  
+          const userDocRef = doc(db, "users", docSnapshot.id);
+          await updateDoc(userDocRef, { boardId: newBoardId });
+  
+          setBoardId(newBoardId);
+        }
+      } else {
+        console.log("No matching documents.");
+      }
+    } catch (error) {
+      console.error("Error getting or updating document: ", error);
+    }
+  };
+
+  useEffect(()=>{
+    getBoardId()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
   useEffect(() => {
     retrieveData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [boardId]);
 
   useEffect(() => {
     if (data) {

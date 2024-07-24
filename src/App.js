@@ -74,7 +74,7 @@ const App = () => {
           </Routes>
         ) : (
           <Routes>
-            <Route path="/" element={<Main db={db} />}></Route>
+            <Route path="/" element={<Main db={db} user={user}/>}></Route>
             <Route path="*" element={<Navigate to="/" />}></Route>
           </Routes>
         )}
