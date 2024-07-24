@@ -1,10 +1,10 @@
 import { Draggable } from "react-beautiful-dnd";
 import { Button } from "@mui/material";
-import { Row } from "./Row";
+import { Task } from "./Task";
 import { useState } from "react";
 import { CreateIssue } from "./CreateIssue";
 
-export const RowList = (props) => {
+export const TaskList = (props) => {
   const { provided, tasks, column, setData, data } = props;
   const [isAdding, setIsAdding] = useState(false);
   const handleAdd = () => {
@@ -20,7 +20,7 @@ export const RowList = (props) => {
         return (
           <Draggable key={task.id} draggableId={task.id} index={index}>
             {(provided) => (
-              <Row
+              <Task
                 provided={provided}
                 task={task}
                 setData={setData}

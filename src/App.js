@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-import { NavLink } from "./components/NavLink";
+import { NavBar } from "./components/NavBar.js";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
@@ -59,7 +59,7 @@ const App = () => {
   return (
     <>
       <BrowserRouter>
-        <NavLink auth={auth} user={user} setUser={setUser} />
+        <NavBar auth={auth} user={user} setUser={setUser} />
         {user === null ? (
           <Routes>
             <Route path="/" element={<Landing />}></Route>

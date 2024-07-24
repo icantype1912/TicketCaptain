@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { RowList } from "./RowList";
+import { TaskList } from "./TaskList";
 
 export const Column = (props) => {
   const { column, tasks, index, setData, data } = props;
@@ -115,7 +115,7 @@ export const Column = (props) => {
           )}
           <Droppable droppableId={column.id} type="tasks">
             {(provided) => (
-              <RowList
+              <TaskList
                 provided={provided}
                 tasks={tasks}
                 column={column}

@@ -15,7 +15,7 @@ import {
 
 import { EditIssue } from "./EditIssue";
 
-export const Row = (props) => {
+export const Task = (props) => {
   const { provided, task, setData, data, column } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);

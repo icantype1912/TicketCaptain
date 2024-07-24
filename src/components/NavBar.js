@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 
-export const NavLink = (props) => {
+export const NavBar = (props) => {
   const { user, setUser,auth } = props;
   const navigate = useNavigate();
   const onLogout = async()=>{
