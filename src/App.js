@@ -18,7 +18,7 @@ import {
   MESSAGING_SENDER_ID,
   APP_ID,
   MEASUREMENT_ID,
-} from "../src/firebaseconfig.js";
+} from "./utilities/firebaseconfig.js";
 
 const firebaseConfig = {
   apiKey:API_KEY,

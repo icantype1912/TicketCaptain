@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { validateEmail } from "../validator";
+import { validateEmail } from "../utilities/validations";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const Login = (props) => {

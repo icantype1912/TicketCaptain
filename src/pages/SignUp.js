@@ -3,7 +3,7 @@ import { Button, TextField } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
-import { validateEmail, validatePassword } from "../validator";
+import { validateEmail, validatePassword } from "../utilities/validations";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const SignUp = (props) => {
