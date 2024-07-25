@@ -38,6 +38,7 @@ const SignUp = (props) => {
         Name: fields.username.toLowerCase(),
         email: fields.email.toLowerCase(),
         isActive: true,
+        sharedBoards : {}
       });
     } catch (e) {
       console.error("Error adding document: ", e);

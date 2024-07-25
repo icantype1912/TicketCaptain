@@ -27,7 +27,6 @@ const Main = (props) => {
     setOpenColab(true);
   };
 
-  
   const dragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
     if (!destination) {
@@ -187,7 +186,7 @@ const Main = (props) => {
           </h1>
         </div>
       </div>
-      <ColabModal openColab = {openColab} setOpenColab = {setOpenColab}/>
+      <ColabModal openColab={openColab} setOpenColab={setOpenColab} db={db} user = {user}/>
       <div className="main-page">
         {data ? (
           <DragDropContext onDragEnd={dragEnd}>

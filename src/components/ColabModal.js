@@ -1,27 +1,101 @@
 import React, { useState } from "react";
-import { Modal, Box, TextField, Button } from "@mui/material";
+import { Modal, Box, TextField, Button,CircularProgress } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { validateEmail } from "../utilities/validations";
+import {
+  collection,
+  getDocs,
+  where,
+  updateDoc,
+  doc,
+  query,
+} from "firebase/firestore";
 
 export const ColabModal = (props) => {
-  const { openColab, setOpenColab } = props;
+  const { openColab, setOpenColab, db, user } = props;
   const [email, setEmail] = useState("");
   const [emailValidity, setEmailValidity] = useState("");
-  const [status,setStatus] = useState("")
+  const [status, setStatus] = useState({ error: true, message: "" });
+  const [loading,setLoading] = useState(false)
 
   const collaborate = async () => {
-    setEmailValidity("")
-    if (!validateEmail(email)) {
-      setEmailValidity("Please enter a valid email");
-      return;
-    }
-    setStatus("This feature has not been completed due to a lazy dev")
-  };
+    try {
+      setLoading(true)
+      let boardId = "";
+      let sharedBoards = {};
+      let docId;
+      setStatus({ error: true, message: "" });
+      setEmailValidity("");
 
+      if (!validateEmail(email)) {
+        setEmailValidity("Please enter a valid email");
+        return;
+      }
+
+      if (email === user.email) {
+        setStatus({
+          error: true,
+          message: "You can't collaborate with yourself",
+        });
+        return;
+      }
+
+      const theirQuery = query(
+        collection(db, "users"),
+        where("email", "==", email)
+      );
+      const querySnapshot = await getDocs(theirQuery);
+
+      if (querySnapshot.empty) {
+        setStatus({
+          error: true,
+          message: "This mail address is not registered with our database",
+        });
+        return;
+      } else {
+        console.log(querySnapshot.docs);
+        const docSnapshot = querySnapshot.docs[0];
+        docId = docSnapshot.id;
+        const docData = docSnapshot.data();
+        sharedBoards = docData.sharedBoards || {};
+      }
+      const myQuery = query(
+        collection(db, "users"),
+        where("Name", "==", user.username)
+      );
+      const snapshot = await getDocs(myQuery);
+
+      if (!snapshot.empty) {
+        const docSnapshot = snapshot.docs[0];
+        const docData = docSnapshot.data();
+        boardId = docData.boardId;
+      }
+
+      const newSharedBoards = { ...sharedBoards, [user.username]: boardId };
+      const userDocRef = doc(db, "users", docId);
+      await updateDoc(userDocRef, { sharedBoards: newSharedBoards });
+
+      setStatus({ error: false, message: "Collaboration successful!" });
+    } catch (error) {
+      console.error(error);
+      setStatus({
+        error: true,
+        message: "An error occurred during collaboration",
+      });
+    }
+    finally{
+      setLoading(false)
+    }
+  };
+  const handleSubmit = (e)=>{
+    e.preventDefault()
+    collaborate()
+  }
   const handleCloseColab = () => {
     setOpenColab(false);
-    setEmail("")
-    setEmailValidity("")
+    setEmail("");
+    setEmailValidity("");
+    setStatus({ error: true, message: "" });
   };
   return (
     <Modal
@@ -46,7 +120,7 @@ export const ColabModal = (props) => {
       >
         <div className="flex flex-col gap-5">
           <h1 className="text-blue-900">Invite</h1>
-          <form className="flex">
+          <form className="flex items-start" onSubmit={handleSubmit}>
             <TextField
               autoFocus
               label="Email"
@@ -59,6 +133,7 @@ export const ColabModal = (props) => {
               helperText={emailValidity}
               error={emailValidity}
             />
+            {!loading?
             <Button
               sx={{
                 width: 40,
@@ -70,9 +145,13 @@ export const ColabModal = (props) => {
               onClick={collaborate}
             >
               <PersonAddIcon sx={{ font: 25 }} />
-            </Button>
+            </Button>:<CircularProgress sx={{marginLeft:2,marginTop:0.8}} size={25}/>}
           </form>
-          <h1 className="text-error text-center">{status}</h1>
+          {status.error ? (
+            <h1 className="text-error text-center">{status.message}</h1>
+          ) : (
+            <h1 className="text-green text-center">{status.message}</h1>
+          )}
           <div className="flex justify-end">
             <Button onClick={handleCloseColab}>Close</Button>
           </div>

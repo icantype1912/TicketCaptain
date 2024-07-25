@@ -22,8 +22,8 @@ module.exports = {
         900:"#03045e",
         950:"#031d44"
       },
-      error:"#FF3333"
-
+      error:"#f44336",
+      green: "#4BB543"
   },
   plugins: [],
 }}
