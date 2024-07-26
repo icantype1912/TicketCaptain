@@ -17,7 +17,7 @@ export const initialData = {
       "task-3": {
         id: "task-3",
         content: "Create new task",
-        description: "Click on the (+ Add issue) button below to create a new task",
+        description: "Click on the (+ Create issue) button below to create a new task",
         tags: ["Tutorial"],
       },
       "task-4": {
