@@ -53,7 +53,6 @@ export const ColabModal = (props) => {
         });
         return;
       } else {
-        console.log(querySnapshot.docs);
         const docSnapshot = querySnapshot.docs[0];
         docId = docSnapshot.id;
         const docData = docSnapshot.data();
@@ -74,8 +73,8 @@ export const ColabModal = (props) => {
       const newSharedBoards = { ...sharedBoards, [user.username]: boardId };
       const userDocRef = doc(db, "users", docId);
       await updateDoc(userDocRef, { sharedBoards: newSharedBoards });
-
       setStatus({ error: false, message: "Collaboration successful!" });
+      setEmail("")
     } catch (error) {
       console.error(error);
       setStatus({

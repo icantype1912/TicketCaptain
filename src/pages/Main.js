@@ -15,14 +15,20 @@ import { nanoid } from "nanoid";
 import { initialData } from "../utilities/tutorial";
 import { Column } from "../components/Column";
 import { ColabModal } from "../components/ColabModal";
+import { BoardListModal } from "../components/BoardListModal";
 
 const Main = (props) => {
   const { db, user } = props;
   const [openColab, setOpenColab] = useState(false);
+  const [openBoardList, setOpenBoardList] = useState(false);
   const [data, setData] = useState(null);
   const [boardId, setBoardId] = useState(null);
+  const [myBoardId, setMyBoardID] = useState(null);
   const [boardExists, setBoardExists] = useState(true);
 
+  const handleOpenBoardList = () => {
+    setOpenBoardList(true);
+  };
   const handleOpenColab = () => {
     setOpenColab(true);
   };
@@ -93,6 +99,10 @@ const Main = (props) => {
     return;
   };
 
+  const myBoard = () => {
+    setBoardId(myBoardId);
+  };
+
   const retrieveData = async () => {
     try {
       if (boardExists) {
@@ -134,6 +144,7 @@ const Main = (props) => {
 
         if (docData.boardId) {
           setBoardId(docData.boardId);
+          setMyBoardID(docData.boardId);
           setBoardExists(true);
         } else {
           const newBoardId = nanoid();
@@ -142,6 +153,7 @@ const Main = (props) => {
           await updateDoc(userDocRef, { boardId: newBoardId });
 
           setBoardId(newBoardId);
+          setMyBoardID(docData.boardId);
         }
       } else {
         console.log("No matching documents.");
@@ -178,15 +190,33 @@ const Main = (props) => {
           Collaborate +
         </h1>
         <div className="flex gap-5">
-          <h1 className="text-blue-900 hover:text-blue-800 hover:cursor-pointer">
+          <h1
+            className="text-blue-900 hover:text-blue-800 hover:cursor-pointer"
+            onClick={myBoard}
+          >
             My Board
           </h1>
-          <h1 className="text-blue-900 hover:text-blue-800 hover:cursor-pointer">
+          <h1
+            className="text-blue-900 hover:text-blue-800 hover:cursor-pointer"
+            onClick={handleOpenBoardList}
+          >
             Shared Boards
           </h1>
         </div>
       </div>
-      <ColabModal openColab={openColab} setOpenColab={setOpenColab} db={db} user = {user}/>
+      <ColabModal
+        openColab={openColab}
+        setOpenColab={setOpenColab}
+        db={db}
+        user={user}
+      />
+      <BoardListModal
+        openBoardList={openBoardList}
+        setOpenBoardList={setOpenBoardList}
+        setBoardId={setBoardId}
+        db = {db}
+        user = {user}
+      />
       <div className="main-page">
         {data ? (
           <DragDropContext onDragEnd={dragEnd}>
