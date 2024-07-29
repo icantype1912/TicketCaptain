@@ -9,6 +9,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Main from "./pages/Main";
+import Boards from "./pages/Boards.js";
 
 import {
   API_KEY,
@@ -74,6 +75,7 @@ const App = () => {
           </Routes>
         ) : (
           <Routes>
+            <Route path = "boards" element = {<Boards/>}></Route>
             <Route path="/" element={<Main db={db} user={user}/>}></Route>
             <Route path="*" element={<Navigate to="/" />}></Route>
           </Routes>
